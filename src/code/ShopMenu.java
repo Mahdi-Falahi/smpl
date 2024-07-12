@@ -74,7 +74,17 @@ public class ShopMenu {
         cardStack2.getChildren().clear();
         cardStack1.getChildren().clear();
 
-        ArrayList<Card> cards = sortCardStack(new ArrayList<>(dataManager.getAllCards()), propertyCombo.getValue(),
+        ArrayList<Card> something = new ArrayList<>();
+
+        for (Card c : dataManager.getAllCards()) {
+            if (dataManager.getCurrentPlayer().getCard(c.getName()) == null) {
+                something.add(c);
+            }
+        }
+
+        something.addAll(dataManager.getPlayerCards(dataManager.getCurrentPlayer().getInfo("username")));
+
+        ArrayList<Card> cards = sortCardStack(new ArrayList<>(something), propertyCombo.getValue(),
                 orderCombo.getValue());
 
         int count = 0;
@@ -168,7 +178,13 @@ public class ShopMenu {
             levelBox.setMaxSize(40, 40);
             levelBox.setMinSize(40, 40);
             levelBox.setAlignment(javafx.geometry.Pos.CENTER);
-            Label levelLabel = new Label(String.valueOf(card.getLevel()));
+            Label levelLabel;
+            if (dataManager.getCurrentPlayer().getCard(card.getName()) == null) {
+                levelLabel = new Label(String.valueOf(card.getLevel()));
+            } else {
+                levelLabel = new Label(
+                        String.valueOf(dataManager.getCurrentPlayer().getCard(card.getName()).getLevel()));
+            }
             levelLabel.setTextFill(Color.WHITE);
             levelLabel.setStyle("-fx-font-size: 24; -fx-font-weight: bold;");
             levelBox.getChildren().add(levelLabel);
